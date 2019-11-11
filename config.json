@@ -1,0 +1,9 @@
+{
+   "modelPackage": "WKDModel",
+   "apiPackage": "WKDApi",
+   "packagePath": "WKDAdmin",
+   "invokerPackage": "WKDClient",
+   "gitUserId": "LiberaCore",
+   "gitRepoId": "WKDAdmin-php",
+   
+}
