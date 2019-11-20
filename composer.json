@@ -1,5 +1,5 @@
 {
-    "name": "GIT_USER_ID/GIT_REPO_ID",
+    "name": "LiberaCore/wkd-admin-php",
     "description": "",
     "keywords": [
         "swagger",
@@ -8,7 +8,7 @@
         "api"
     ],
     "homepage": "http://swagger.io",
-    "license": "proprietary",
+    "license": "AGPLv3",
     "authors": [
         {
             "name": "Swagger and contributors",
