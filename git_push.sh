@@ -8,7 +8,7 @@ git_repo_id=$2
 release_note=$3
 
 if [ "$git_user_id" = "" ]; then
-    git_user_id="LiberaCore"
+    git_user_id="GIT_USER_ID"
     echo "[INFO] No command line input provided. Set \$git_user_id to $git_user_id"
 fi
 
@@ -23,7 +23,7 @@ if [ "$release_note" = "" ]; then
 fi
 
 # Initialize the local directory as a Git repository
-#git init
+git init
 
 # Adds the files in the local repository and stages them for commit.
 git add .
@@ -49,3 +49,4 @@ git pull origin master
 # Pushes (Forces) the changes in the local repository up to the remote repository
 echo "Git pushing to https://github.com/${git_user_id}/${git_repo_id}.git"
 git push origin master 2>&1 | grep -v 'To https'
+

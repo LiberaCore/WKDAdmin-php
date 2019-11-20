@@ -89,13 +89,13 @@ class AdminApi
     /**
      * Operation deleteAdminKeyClass
      *
-     * @param  string $email email (optional)
+     * @param  string $email email to lookup (required)
      *
      * @throws \WKDClient\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function deleteAdminKeyClass($email = null)
+    public function deleteAdminKeyClass($email)
     {
         $this->deleteAdminKeyClassWithHttpInfo($email);
     }
@@ -103,13 +103,13 @@ class AdminApi
     /**
      * Operation deleteAdminKeyClassWithHttpInfo
      *
-     * @param  string $email (optional)
+     * @param  string $email email to lookup (required)
      *
      * @throws \WKDClient\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
-    public function deleteAdminKeyClassWithHttpInfo($email = null)
+    public function deleteAdminKeyClassWithHttpInfo($email)
     {
         $returnType = '';
         $request = $this->deleteAdminKeyClassRequest($email);
@@ -156,12 +156,12 @@ class AdminApi
      *
      * 
      *
-     * @param  string $email (optional)
+     * @param  string $email email to lookup (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteAdminKeyClassAsync($email = null)
+    public function deleteAdminKeyClassAsync($email)
     {
         return $this->deleteAdminKeyClassAsyncWithHttpInfo($email)
             ->then(
@@ -176,12 +176,12 @@ class AdminApi
      *
      * 
      *
-     * @param  string $email (optional)
+     * @param  string $email email to lookup (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteAdminKeyClassAsyncWithHttpInfo($email = null)
+    public function deleteAdminKeyClassAsyncWithHttpInfo($email)
     {
         $returnType = '';
         $request = $this->deleteAdminKeyClassRequest($email);
@@ -212,15 +212,21 @@ class AdminApi
     /**
      * Create request for operation 'deleteAdminKeyClass'
      *
-     * @param  string $email (optional)
+     * @param  string $email email to lookup (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function deleteAdminKeyClassRequest($email = null)
+    protected function deleteAdminKeyClassRequest($email)
     {
+        // verify the required parameter 'email' is set
+        if ($email === null || (is_array($email) && count($email) === 0)) {
+            throw new \InvalidArgumentException(
+                'Missing the required parameter $email when calling deleteAdminKeyClass'
+            );
+        }
 
-        $resourcePath = '/admin/key';
+        $resourcePath = '/admin/key/{email}';
         $formParams = [];
         $queryParams = [];
         $headerParams = [];
@@ -228,15 +234,15 @@ class AdminApi
         $multipart = false;
 
 
+        // path params
+        if ($email !== null) {
+            $resourcePath = str_replace(
+                '{' . 'email' . '}',
+                ObjectSerializer::toPathValue($email),
+                $resourcePath
+            );
+        }
 
-        // form params
-        if ($email !== null) {
-            $formParams['email'] = ObjectSerializer::toFormValue($email);
-        }
-        // form params
-        if ($email !== null) {
-            $formParams['email'] = ObjectSerializer::toFormValue($email);
-        }
         // body params
         $_tempBody = null;
 
@@ -247,227 +253,7 @@ class AdminApi
         } else {
             $headers = $this->headerSelector->selectHeaders(
                 [],
-                ['application/x-www-form-urlencoded', 'multipart/form-data']
-            );
-        }
-
-        // for model (json/xml)
-        if (isset($_tempBody)) {
-            // $_tempBody is the method argument, if present
-            $httpBody = $_tempBody;
-            // \stdClass has no __toString(), so we should encode it manually
-            if ($httpBody instanceof \stdClass && $headers['Content-Type'] === 'application/json') {
-                $httpBody = \GuzzleHttp\json_encode($httpBody);
-            }
-        } elseif (count($formParams) > 0) {
-            if ($multipart) {
-                $multipartContents = [];
-                foreach ($formParams as $formParamName => $formParamValue) {
-                    $multipartContents[] = [
-                        'name' => $formParamName,
-                        'contents' => $formParamValue
-                    ];
-                }
-                // for HTTP post (form)
-                $httpBody = new MultipartStream($multipartContents);
-
-            } elseif ($headers['Content-Type'] === 'application/json') {
-                $httpBody = \GuzzleHttp\json_encode($formParams);
-
-            } else {
-                // for HTTP post (form)
-                $httpBody = \GuzzleHttp\Psr7\build_query($formParams);
-            }
-        }
-
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('X-API-Key');
-        if ($apiKey !== null) {
-            $headers['X-API-Key'] = $apiKey;
-        }
-
-        $defaultHeaders = [];
-        if ($this->config->getUserAgent()) {
-            $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
-        }
-
-        $headers = array_merge(
-            $defaultHeaders,
-            $headerParams,
-            $headers
-        );
-
-        $query = \GuzzleHttp\Psr7\build_query($queryParams);
-        return new Request(
-            'DELETE',
-            $this->config->getHost() . $resourcePath . ($query ? "?{$query}" : ''),
-            $headers,
-            $httpBody
-        );
-    }
-
-    /**
-     * Operation deleteAdminKeyClass
-     *
-     * @param  string $email email (optional)
-     *
-     * @throws \WKDClient\ApiException on non-2xx response
-     * @throws \InvalidArgumentException
-     * @return void
-     */
-    public function deleteAdminKeyClass($email = null)
-    {
-        $this->deleteAdminKeyClassWithHttpInfo($email);
-    }
-
-    /**
-     * Operation deleteAdminKeyClassWithHttpInfo
-     *
-     * @param  string $email (optional)
-     *
-     * @throws \WKDClient\ApiException on non-2xx response
-     * @throws \InvalidArgumentException
-     * @return array of null, HTTP status code, HTTP response headers (array of strings)
-     */
-    public function deleteAdminKeyClassWithHttpInfo($email = null)
-    {
-        $returnType = '';
-        $request = $this->deleteAdminKeyClassRequest($email);
-
-        try {
-            $options = $this->createHttpClientOption();
-            try {
-                $response = $this->client->send($request, $options);
-            } catch (RequestException $e) {
-                throw new ApiException(
-                    "[{$e->getCode()}] {$e->getMessage()}",
-                    $e->getCode(),
-                    $e->getResponse() ? $e->getResponse()->getHeaders() : null,
-                    $e->getResponse() ? $e->getResponse()->getBody()->getContents() : null
-                );
-            }
-
-            $statusCode = $response->getStatusCode();
-
-            if ($statusCode < 200 || $statusCode > 299) {
-                throw new ApiException(
-                    sprintf(
-                        '[%d] Error connecting to the API (%s)',
-                        $statusCode,
-                        $request->getUri()
-                    ),
-                    $statusCode,
-                    $response->getHeaders(),
-                    $response->getBody()
-                );
-            }
-
-            return [null, $statusCode, $response->getHeaders()];
-
-        } catch (ApiException $e) {
-            switch ($e->getCode()) {
-            }
-            throw $e;
-        }
-    }
-
-    /**
-     * Operation deleteAdminKeyClassAsync
-     *
-     * 
-     *
-     * @param  string $email (optional)
-     *
-     * @throws \InvalidArgumentException
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function deleteAdminKeyClassAsync($email = null)
-    {
-        return $this->deleteAdminKeyClassAsyncWithHttpInfo($email)
-            ->then(
-                function ($response) {
-                    return $response[0];
-                }
-            );
-    }
-
-    /**
-     * Operation deleteAdminKeyClassAsyncWithHttpInfo
-     *
-     * 
-     *
-     * @param  string $email (optional)
-     *
-     * @throws \InvalidArgumentException
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function deleteAdminKeyClassAsyncWithHttpInfo($email = null)
-    {
-        $returnType = '';
-        $request = $this->deleteAdminKeyClassRequest($email);
-
-        return $this->client
-            ->sendAsync($request, $this->createHttpClientOption())
-            ->then(
-                function ($response) use ($returnType) {
-                    return [null, $response->getStatusCode(), $response->getHeaders()];
-                },
-                function ($exception) {
-                    $response = $exception->getResponse();
-                    $statusCode = $response->getStatusCode();
-                    throw new ApiException(
-                        sprintf(
-                            '[%d] Error connecting to the API (%s)',
-                            $statusCode,
-                            $exception->getRequest()->getUri()
-                        ),
-                        $statusCode,
-                        $response->getHeaders(),
-                        $response->getBody()
-                    );
-                }
-            );
-    }
-
-    /**
-     * Create request for operation 'deleteAdminKeyClass'
-     *
-     * @param  string $email (optional)
-     *
-     * @throws \InvalidArgumentException
-     * @return \GuzzleHttp\Psr7\Request
-     */
-    protected function deleteAdminKeyClassRequest($email = null)
-    {
-
-        $resourcePath = '/admin/key';
-        $formParams = [];
-        $queryParams = [];
-        $headerParams = [];
-        $httpBody = '';
-        $multipart = false;
-
-
-
-        // form params
-        if ($email !== null) {
-            $formParams['email'] = ObjectSerializer::toFormValue($email);
-        }
-        // form params
-        if ($email !== null) {
-            $formParams['email'] = ObjectSerializer::toFormValue($email);
-        }
-        // body params
-        $_tempBody = null;
-
-        if ($multipart) {
-            $headers = $this->headerSelector->selectHeadersForMultipart(
                 []
-            );
-        } else {
-            $headers = $this->headerSelector->selectHeaders(
-                [],
-                ['application/x-www-form-urlencoded', 'multipart/form-data']
             );
         }
 
@@ -529,13 +315,13 @@ class AdminApi
     /**
      * Operation getAdminKeyClass
      *
-     * @param  string $email email (optional)
+     * @param  string $email email to lookup (required)
      *
      * @throws \WKDClient\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function getAdminKeyClass($email = null)
+    public function getAdminKeyClass($email)
     {
         $this->getAdminKeyClassWithHttpInfo($email);
     }
@@ -543,13 +329,13 @@ class AdminApi
     /**
      * Operation getAdminKeyClassWithHttpInfo
      *
-     * @param  string $email (optional)
+     * @param  string $email email to lookup (required)
      *
      * @throws \WKDClient\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
-    public function getAdminKeyClassWithHttpInfo($email = null)
+    public function getAdminKeyClassWithHttpInfo($email)
     {
         $returnType = '';
         $request = $this->getAdminKeyClassRequest($email);
@@ -596,12 +382,12 @@ class AdminApi
      *
      * 
      *
-     * @param  string $email (optional)
+     * @param  string $email email to lookup (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function getAdminKeyClassAsync($email = null)
+    public function getAdminKeyClassAsync($email)
     {
         return $this->getAdminKeyClassAsyncWithHttpInfo($email)
             ->then(
@@ -616,12 +402,12 @@ class AdminApi
      *
      * 
      *
-     * @param  string $email (optional)
+     * @param  string $email email to lookup (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function getAdminKeyClassAsyncWithHttpInfo($email = null)
+    public function getAdminKeyClassAsyncWithHttpInfo($email)
     {
         $returnType = '';
         $request = $this->getAdminKeyClassRequest($email);
@@ -652,15 +438,21 @@ class AdminApi
     /**
      * Create request for operation 'getAdminKeyClass'
      *
-     * @param  string $email (optional)
+     * @param  string $email email to lookup (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function getAdminKeyClassRequest($email = null)
+    protected function getAdminKeyClassRequest($email)
     {
+        // verify the required parameter 'email' is set
+        if ($email === null || (is_array($email) && count($email) === 0)) {
+            throw new \InvalidArgumentException(
+                'Missing the required parameter $email when calling getAdminKeyClass'
+            );
+        }
 
-        $resourcePath = '/admin/key';
+        $resourcePath = '/admin/key/{email}';
         $formParams = [];
         $queryParams = [];
         $headerParams = [];
@@ -668,15 +460,15 @@ class AdminApi
         $multipart = false;
 
 
+        // path params
+        if ($email !== null) {
+            $resourcePath = str_replace(
+                '{' . 'email' . '}',
+                ObjectSerializer::toPathValue($email),
+                $resourcePath
+            );
+        }
 
-        // form params
-        if ($email !== null) {
-            $formParams['email'] = ObjectSerializer::toFormValue($email);
-        }
-        // form params
-        if ($email !== null) {
-            $formParams['email'] = ObjectSerializer::toFormValue($email);
-        }
         // body params
         $_tempBody = null;
 
@@ -687,227 +479,7 @@ class AdminApi
         } else {
             $headers = $this->headerSelector->selectHeaders(
                 [],
-                ['application/x-www-form-urlencoded', 'multipart/form-data']
-            );
-        }
-
-        // for model (json/xml)
-        if (isset($_tempBody)) {
-            // $_tempBody is the method argument, if present
-            $httpBody = $_tempBody;
-            // \stdClass has no __toString(), so we should encode it manually
-            if ($httpBody instanceof \stdClass && $headers['Content-Type'] === 'application/json') {
-                $httpBody = \GuzzleHttp\json_encode($httpBody);
-            }
-        } elseif (count($formParams) > 0) {
-            if ($multipart) {
-                $multipartContents = [];
-                foreach ($formParams as $formParamName => $formParamValue) {
-                    $multipartContents[] = [
-                        'name' => $formParamName,
-                        'contents' => $formParamValue
-                    ];
-                }
-                // for HTTP post (form)
-                $httpBody = new MultipartStream($multipartContents);
-
-            } elseif ($headers['Content-Type'] === 'application/json') {
-                $httpBody = \GuzzleHttp\json_encode($formParams);
-
-            } else {
-                // for HTTP post (form)
-                $httpBody = \GuzzleHttp\Psr7\build_query($formParams);
-            }
-        }
-
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('X-API-Key');
-        if ($apiKey !== null) {
-            $headers['X-API-Key'] = $apiKey;
-        }
-
-        $defaultHeaders = [];
-        if ($this->config->getUserAgent()) {
-            $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
-        }
-
-        $headers = array_merge(
-            $defaultHeaders,
-            $headerParams,
-            $headers
-        );
-
-        $query = \GuzzleHttp\Psr7\build_query($queryParams);
-        return new Request(
-            'GET',
-            $this->config->getHost() . $resourcePath . ($query ? "?{$query}" : ''),
-            $headers,
-            $httpBody
-        );
-    }
-
-    /**
-     * Operation getAdminKeyClass
-     *
-     * @param  string $email email (optional)
-     *
-     * @throws \WKDClient\ApiException on non-2xx response
-     * @throws \InvalidArgumentException
-     * @return void
-     */
-    public function getAdminKeyClass($email = null)
-    {
-        $this->getAdminKeyClassWithHttpInfo($email);
-    }
-
-    /**
-     * Operation getAdminKeyClassWithHttpInfo
-     *
-     * @param  string $email (optional)
-     *
-     * @throws \WKDClient\ApiException on non-2xx response
-     * @throws \InvalidArgumentException
-     * @return array of null, HTTP status code, HTTP response headers (array of strings)
-     */
-    public function getAdminKeyClassWithHttpInfo($email = null)
-    {
-        $returnType = '';
-        $request = $this->getAdminKeyClassRequest($email);
-
-        try {
-            $options = $this->createHttpClientOption();
-            try {
-                $response = $this->client->send($request, $options);
-            } catch (RequestException $e) {
-                throw new ApiException(
-                    "[{$e->getCode()}] {$e->getMessage()}",
-                    $e->getCode(),
-                    $e->getResponse() ? $e->getResponse()->getHeaders() : null,
-                    $e->getResponse() ? $e->getResponse()->getBody()->getContents() : null
-                );
-            }
-
-            $statusCode = $response->getStatusCode();
-
-            if ($statusCode < 200 || $statusCode > 299) {
-                throw new ApiException(
-                    sprintf(
-                        '[%d] Error connecting to the API (%s)',
-                        $statusCode,
-                        $request->getUri()
-                    ),
-                    $statusCode,
-                    $response->getHeaders(),
-                    $response->getBody()
-                );
-            }
-
-            return [null, $statusCode, $response->getHeaders()];
-
-        } catch (ApiException $e) {
-            switch ($e->getCode()) {
-            }
-            throw $e;
-        }
-    }
-
-    /**
-     * Operation getAdminKeyClassAsync
-     *
-     * 
-     *
-     * @param  string $email (optional)
-     *
-     * @throws \InvalidArgumentException
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function getAdminKeyClassAsync($email = null)
-    {
-        return $this->getAdminKeyClassAsyncWithHttpInfo($email)
-            ->then(
-                function ($response) {
-                    return $response[0];
-                }
-            );
-    }
-
-    /**
-     * Operation getAdminKeyClassAsyncWithHttpInfo
-     *
-     * 
-     *
-     * @param  string $email (optional)
-     *
-     * @throws \InvalidArgumentException
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function getAdminKeyClassAsyncWithHttpInfo($email = null)
-    {
-        $returnType = '';
-        $request = $this->getAdminKeyClassRequest($email);
-
-        return $this->client
-            ->sendAsync($request, $this->createHttpClientOption())
-            ->then(
-                function ($response) use ($returnType) {
-                    return [null, $response->getStatusCode(), $response->getHeaders()];
-                },
-                function ($exception) {
-                    $response = $exception->getResponse();
-                    $statusCode = $response->getStatusCode();
-                    throw new ApiException(
-                        sprintf(
-                            '[%d] Error connecting to the API (%s)',
-                            $statusCode,
-                            $exception->getRequest()->getUri()
-                        ),
-                        $statusCode,
-                        $response->getHeaders(),
-                        $response->getBody()
-                    );
-                }
-            );
-    }
-
-    /**
-     * Create request for operation 'getAdminKeyClass'
-     *
-     * @param  string $email (optional)
-     *
-     * @throws \InvalidArgumentException
-     * @return \GuzzleHttp\Psr7\Request
-     */
-    protected function getAdminKeyClassRequest($email = null)
-    {
-
-        $resourcePath = '/admin/key';
-        $formParams = [];
-        $queryParams = [];
-        $headerParams = [];
-        $httpBody = '';
-        $multipart = false;
-
-
-
-        // form params
-        if ($email !== null) {
-            $formParams['email'] = ObjectSerializer::toFormValue($email);
-        }
-        // form params
-        if ($email !== null) {
-            $formParams['email'] = ObjectSerializer::toFormValue($email);
-        }
-        // body params
-        $_tempBody = null;
-
-        if ($multipart) {
-            $headers = $this->headerSelector->selectHeadersForMultipart(
                 []
-            );
-        } else {
-            $headers = $this->headerSelector->selectHeaders(
-                [],
-                ['application/x-www-form-urlencoded', 'multipart/form-data']
             );
         }
 
@@ -969,32 +541,32 @@ class AdminApi
     /**
      * Operation postAdminKeyClass
      *
-     * @param  string $email email (optional)
-     * @param  string $key key (optional)
+     * @param  \WKDClient\WKDModel\KeyModel $body body (required)
+     * @param  string $email email to lookup (required)
      *
      * @throws \WKDClient\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function postAdminKeyClass($email = null, $key = null)
+    public function postAdminKeyClass($body, $email)
     {
-        $this->postAdminKeyClassWithHttpInfo($email, $key);
+        $this->postAdminKeyClassWithHttpInfo($body, $email);
     }
 
     /**
      * Operation postAdminKeyClassWithHttpInfo
      *
-     * @param  string $email (optional)
-     * @param  string $key (optional)
+     * @param  \WKDClient\WKDModel\KeyModel $body (required)
+     * @param  string $email email to lookup (required)
      *
      * @throws \WKDClient\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
-    public function postAdminKeyClassWithHttpInfo($email = null, $key = null)
+    public function postAdminKeyClassWithHttpInfo($body, $email)
     {
         $returnType = '';
-        $request = $this->postAdminKeyClassRequest($email, $key);
+        $request = $this->postAdminKeyClassRequest($body, $email);
 
         try {
             $options = $this->createHttpClientOption();
@@ -1038,15 +610,15 @@ class AdminApi
      *
      * 
      *
-     * @param  string $email (optional)
-     * @param  string $key (optional)
+     * @param  \WKDClient\WKDModel\KeyModel $body (required)
+     * @param  string $email email to lookup (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function postAdminKeyClassAsync($email = null, $key = null)
+    public function postAdminKeyClassAsync($body, $email)
     {
-        return $this->postAdminKeyClassAsyncWithHttpInfo($email, $key)
+        return $this->postAdminKeyClassAsyncWithHttpInfo($body, $email)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -1059,16 +631,16 @@ class AdminApi
      *
      * 
      *
-     * @param  string $email (optional)
-     * @param  string $key (optional)
+     * @param  \WKDClient\WKDModel\KeyModel $body (required)
+     * @param  string $email email to lookup (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function postAdminKeyClassAsyncWithHttpInfo($email = null, $key = null)
+    public function postAdminKeyClassAsyncWithHttpInfo($body, $email)
     {
         $returnType = '';
-        $request = $this->postAdminKeyClassRequest($email, $key);
+        $request = $this->postAdminKeyClassRequest($body, $email);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -1096,16 +668,28 @@ class AdminApi
     /**
      * Create request for operation 'postAdminKeyClass'
      *
-     * @param  string $email (optional)
-     * @param  string $key (optional)
+     * @param  \WKDClient\WKDModel\KeyModel $body (required)
+     * @param  string $email email to lookup (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function postAdminKeyClassRequest($email = null, $key = null)
+    protected function postAdminKeyClassRequest($body, $email)
     {
+        // verify the required parameter 'body' is set
+        if ($body === null || (is_array($body) && count($body) === 0)) {
+            throw new \InvalidArgumentException(
+                'Missing the required parameter $body when calling postAdminKeyClass'
+            );
+        }
+        // verify the required parameter 'email' is set
+        if ($email === null || (is_array($email) && count($email) === 0)) {
+            throw new \InvalidArgumentException(
+                'Missing the required parameter $email when calling postAdminKeyClass'
+            );
+        }
 
-        $resourcePath = '/admin/key';
+        $resourcePath = '/admin/key/{email}';
         $formParams = [];
         $queryParams = [];
         $headerParams = [];
@@ -1113,25 +697,20 @@ class AdminApi
         $multipart = false;
 
 
+        // path params
+        if ($email !== null) {
+            $resourcePath = str_replace(
+                '{' . 'email' . '}',
+                ObjectSerializer::toPathValue($email),
+                $resourcePath
+            );
+        }
 
-        // form params
-        if ($email !== null) {
-            $formParams['email'] = ObjectSerializer::toFormValue($email);
-        }
-        // form params
-        if ($key !== null) {
-            $formParams['key'] = ObjectSerializer::toFormValue($key);
-        }
-        // form params
-        if ($email !== null) {
-            $formParams['email'] = ObjectSerializer::toFormValue($email);
-        }
-        // form params
-        if ($key !== null) {
-            $formParams['key'] = ObjectSerializer::toFormValue($key);
-        }
         // body params
         $_tempBody = null;
+        if (isset($body)) {
+            $_tempBody = $body;
+        }
 
         if ($multipart) {
             $headers = $this->headerSelector->selectHeadersForMultipart(
@@ -1140,240 +719,7 @@ class AdminApi
         } else {
             $headers = $this->headerSelector->selectHeaders(
                 [],
-                ['application/x-www-form-urlencoded', 'multipart/form-data']
-            );
-        }
-
-        // for model (json/xml)
-        if (isset($_tempBody)) {
-            // $_tempBody is the method argument, if present
-            $httpBody = $_tempBody;
-            // \stdClass has no __toString(), so we should encode it manually
-            if ($httpBody instanceof \stdClass && $headers['Content-Type'] === 'application/json') {
-                $httpBody = \GuzzleHttp\json_encode($httpBody);
-            }
-        } elseif (count($formParams) > 0) {
-            if ($multipart) {
-                $multipartContents = [];
-                foreach ($formParams as $formParamName => $formParamValue) {
-                    $multipartContents[] = [
-                        'name' => $formParamName,
-                        'contents' => $formParamValue
-                    ];
-                }
-                // for HTTP post (form)
-                $httpBody = new MultipartStream($multipartContents);
-
-            } elseif ($headers['Content-Type'] === 'application/json') {
-                $httpBody = \GuzzleHttp\json_encode($formParams);
-
-            } else {
-                // for HTTP post (form)
-                $httpBody = \GuzzleHttp\Psr7\build_query($formParams);
-            }
-        }
-
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('X-API-Key');
-        if ($apiKey !== null) {
-            $headers['X-API-Key'] = $apiKey;
-        }
-
-        $defaultHeaders = [];
-        if ($this->config->getUserAgent()) {
-            $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
-        }
-
-        $headers = array_merge(
-            $defaultHeaders,
-            $headerParams,
-            $headers
-        );
-
-        $query = \GuzzleHttp\Psr7\build_query($queryParams);
-        return new Request(
-            'POST',
-            $this->config->getHost() . $resourcePath . ($query ? "?{$query}" : ''),
-            $headers,
-            $httpBody
-        );
-    }
-
-    /**
-     * Operation postAdminKeyClass
-     *
-     * @param  string $email email (optional)
-     * @param  string $key key (optional)
-     *
-     * @throws \WKDClient\ApiException on non-2xx response
-     * @throws \InvalidArgumentException
-     * @return void
-     */
-    public function postAdminKeyClass($email = null, $key = null)
-    {
-        $this->postAdminKeyClassWithHttpInfo($email, $key);
-    }
-
-    /**
-     * Operation postAdminKeyClassWithHttpInfo
-     *
-     * @param  string $email (optional)
-     * @param  string $key (optional)
-     *
-     * @throws \WKDClient\ApiException on non-2xx response
-     * @throws \InvalidArgumentException
-     * @return array of null, HTTP status code, HTTP response headers (array of strings)
-     */
-    public function postAdminKeyClassWithHttpInfo($email = null, $key = null)
-    {
-        $returnType = '';
-        $request = $this->postAdminKeyClassRequest($email, $key);
-
-        try {
-            $options = $this->createHttpClientOption();
-            try {
-                $response = $this->client->send($request, $options);
-            } catch (RequestException $e) {
-                throw new ApiException(
-                    "[{$e->getCode()}] {$e->getMessage()}",
-                    $e->getCode(),
-                    $e->getResponse() ? $e->getResponse()->getHeaders() : null,
-                    $e->getResponse() ? $e->getResponse()->getBody()->getContents() : null
-                );
-            }
-
-            $statusCode = $response->getStatusCode();
-
-            if ($statusCode < 200 || $statusCode > 299) {
-                throw new ApiException(
-                    sprintf(
-                        '[%d] Error connecting to the API (%s)',
-                        $statusCode,
-                        $request->getUri()
-                    ),
-                    $statusCode,
-                    $response->getHeaders(),
-                    $response->getBody()
-                );
-            }
-
-            return [null, $statusCode, $response->getHeaders()];
-
-        } catch (ApiException $e) {
-            switch ($e->getCode()) {
-            }
-            throw $e;
-        }
-    }
-
-    /**
-     * Operation postAdminKeyClassAsync
-     *
-     * 
-     *
-     * @param  string $email (optional)
-     * @param  string $key (optional)
-     *
-     * @throws \InvalidArgumentException
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function postAdminKeyClassAsync($email = null, $key = null)
-    {
-        return $this->postAdminKeyClassAsyncWithHttpInfo($email, $key)
-            ->then(
-                function ($response) {
-                    return $response[0];
-                }
-            );
-    }
-
-    /**
-     * Operation postAdminKeyClassAsyncWithHttpInfo
-     *
-     * 
-     *
-     * @param  string $email (optional)
-     * @param  string $key (optional)
-     *
-     * @throws \InvalidArgumentException
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function postAdminKeyClassAsyncWithHttpInfo($email = null, $key = null)
-    {
-        $returnType = '';
-        $request = $this->postAdminKeyClassRequest($email, $key);
-
-        return $this->client
-            ->sendAsync($request, $this->createHttpClientOption())
-            ->then(
-                function ($response) use ($returnType) {
-                    return [null, $response->getStatusCode(), $response->getHeaders()];
-                },
-                function ($exception) {
-                    $response = $exception->getResponse();
-                    $statusCode = $response->getStatusCode();
-                    throw new ApiException(
-                        sprintf(
-                            '[%d] Error connecting to the API (%s)',
-                            $statusCode,
-                            $exception->getRequest()->getUri()
-                        ),
-                        $statusCode,
-                        $response->getHeaders(),
-                        $response->getBody()
-                    );
-                }
-            );
-    }
-
-    /**
-     * Create request for operation 'postAdminKeyClass'
-     *
-     * @param  string $email (optional)
-     * @param  string $key (optional)
-     *
-     * @throws \InvalidArgumentException
-     * @return \GuzzleHttp\Psr7\Request
-     */
-    protected function postAdminKeyClassRequest($email = null, $key = null)
-    {
-
-        $resourcePath = '/admin/key';
-        $formParams = [];
-        $queryParams = [];
-        $headerParams = [];
-        $httpBody = '';
-        $multipart = false;
-
-
-
-        // form params
-        if ($email !== null) {
-            $formParams['email'] = ObjectSerializer::toFormValue($email);
-        }
-        // form params
-        if ($key !== null) {
-            $formParams['key'] = ObjectSerializer::toFormValue($key);
-        }
-        // form params
-        if ($email !== null) {
-            $formParams['email'] = ObjectSerializer::toFormValue($email);
-        }
-        // form params
-        if ($key !== null) {
-            $formParams['key'] = ObjectSerializer::toFormValue($key);
-        }
-        // body params
-        $_tempBody = null;
-
-        if ($multipart) {
-            $headers = $this->headerSelector->selectHeadersForMultipart(
-                []
-            );
-        } else {
-            $headers = $this->headerSelector->selectHeaders(
-                [],
-                ['application/x-www-form-urlencoded', 'multipart/form-data']
+                ['application/json']
             );
         }
 
